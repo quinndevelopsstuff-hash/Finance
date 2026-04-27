@@ -20,74 +20,15 @@ let state = { accounts: [], transactions: [], goals: [] };
 function loadState() {
   try {
     const raw = localStorage.getItem('financeApp');
-    if (raw) { state = JSON.parse(raw); return; }
-  } catch(_) {}
-  seedData();
+    if (raw) { state = JSON.parse(raw); return true; }
+  } catch(_) {
+    localStorage.removeItem('financeApp');
+  }
+  return false;
 }
 
 function saveState() {
   localStorage.setItem('financeApp', JSON.stringify(state));
-}
-
-/* =====================
-   Seed / Demo Data
-   ===================== */
-function seedData() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
-
-  state.accounts = [
-    { id: uid(), name: 'Chase Checking', type: 'Checking', emoji: '🏦', color: '#6366f1', balance: 3240.50 },
-    { id: uid(), name: 'High-Yield Savings', type: 'Savings', emoji: '💰', color: '#22c55e', balance: 12500.00 },
-    { id: uid(), name: 'Wallet', type: 'Cash', emoji: '👛', color: '#f59e0b', balance: 85.00 },
-  ];
-
-  const [chk, sav, cash] = state.accounts.map(a => a.id);
-
-  function d(mo, day) {
-    return new Date(y, m + mo, day).toISOString().slice(0,10);
-  }
-
-  state.transactions = [
-    // current month
-    { id: uid(), type:'expense', desc:'Whole Foods',       amount:127.45, date:d(0,4),  account:chk,  category:'Food'          },
-    { id: uid(), type:'expense', desc:'Netflix',           amount:15.99,  date:d(0,3),  account:chk,  category:'Entertainment' },
-    { id: uid(), type:'expense', desc:'Electric Bill',     amount:89.00,  date:d(0,2),  account:chk,  category:'Utilities'     },
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(0,1),  account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Uber Eats',         amount:34.20,  date:d(0,6),  account:chk,  category:'Food'          },
-    { id: uid(), type:'expense', desc:'Monthly Rent',      amount:1450.00,date:d(0,1),  account:chk,  category:'Housing'       },
-    { id: uid(), type:'transfer',desc:'Savings Transfer',  amount:500.00, date:d(0,5),  account:chk,  toAccount:sav, category:'Transfer' },
-    { id: uid(), type:'expense', desc:'Coffee shop',       amount:18.50,  date:d(0,7),  account:cash, category:'Food'          },
-    { id: uid(), type:'expense', desc:'Gym Membership',    amount:45.00,  date:d(0,3),  account:chk,  category:'Health'        },
-    { id: uid(), type:'expense', desc:'Amazon order',      amount:67.99,  date:d(0,8),  account:chk,  category:'Shopping'      },
-    // prior months
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(-1,1), account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Groceries',         amount:145.00, date:d(-1,5), account:chk,  category:'Food'          },
-    { id: uid(), type:'expense', desc:'Flight tickets',    amount:380.00, date:d(-1,10),account:chk,  category:'Travel'        },
-    { id: uid(), type:'expense', desc:'Phone bill',        amount:55.00,  date:d(-1,3), account:chk,  category:'Utilities'     },
-    { id: uid(), type:'income',  desc:'Freelance project', amount:950.00, date:d(-1,15),account:chk,  category:'Income'        },
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(-2,1), account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Dentist',           amount:200.00, date:d(-2,8), account:chk,  category:'Health'        },
-    { id: uid(), type:'expense', desc:'Groceries',         amount:110.00, date:d(-2,5), account:chk,  category:'Food'          },
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(-3,1), account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Car insurance',     amount:175.00, date:d(-3,10),account:chk,  category:'Transport'     },
-    { id: uid(), type:'expense', desc:'Groceries',         amount:132.00, date:d(-3,5), account:chk,  category:'Food'          },
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(-4,1), account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Online course',     amount:99.00,  date:d(-4,12),account:chk,  category:'Education'     },
-    { id: uid(), type:'expense', desc:'Groceries',         amount:118.00, date:d(-4,5), account:chk,  category:'Food'          },
-    { id: uid(), type:'income',  desc:'Paycheck',          amount:3800.00,date:d(-5,1), account:chk,  category:'Income'        },
-    { id: uid(), type:'expense', desc:'Clothing',          amount:210.00, date:d(-5,20),account:chk,  category:'Shopping'      },
-    { id: uid(), type:'expense', desc:'Groceries',         amount:155.00, date:d(-5,5), account:chk,  category:'Food'          },
-  ];
-
-  state.goals = [
-    { id: uid(), name:'Emergency Fund',   emoji:'🛡️',  target:10000, current:6200, color:'#22c55e' },
-    { id: uid(), name:'Vacation to Japan',emoji:'✈️',  target:3500,  current:1200, color:'#6366f1' },
-    { id: uid(), name:'New Laptop',       emoji:'💻',  target:1800,  current:1800, color:'#f59e0b' },
-  ];
-
-  saveState();
 }
 
 /* =====================
@@ -210,6 +151,107 @@ function buildSwatch(containerId, hiddenId, defaultColor) {
 }
 
 /* =====================
+   Onboarding
+   ===================== */
+let onboardingAccounts = [];
+
+function showOnboarding() {
+  document.getElementById('onboarding').classList.add('active');
+  onboardingAccounts = [];
+  document.getElementById('obColor').value = SWATCHES[0];
+  buildSwatch('obColorSwatch', 'obColor', SWATCHES[0]);
+  renderObAccList();
+}
+
+function hideOnboarding() {
+  document.getElementById('onboarding').classList.remove('active');
+}
+
+function renderObAccList() {
+  const list     = document.getElementById('obAccList');
+  const countEl  = document.getElementById('obAccCount');
+  const hintEl   = document.getElementById('obHint');
+  const startBtn = document.getElementById('getStartedBtn');
+
+  if (!onboardingAccounts.length) {
+    list.innerHTML = '<li class="ob-empty">No accounts added yet</li>';
+    countEl.classList.remove('visible');
+    hintEl.style.display = '';
+    startBtn.disabled = true;
+    return;
+  }
+
+  countEl.textContent = onboardingAccounts.length;
+  countEl.classList.add('visible');
+  hintEl.style.display = 'none';
+  startBtn.disabled = false;
+
+  list.innerHTML = onboardingAccounts.map(acc => `
+    <li class="ob-acc-item">
+      <div class="ob-acc-dot" style="background:${acc.color}22;color:${acc.color}">${acc.emoji}</div>
+      <div class="ob-acc-info">
+        <div class="ob-acc-name">${acc.name}</div>
+        <div class="ob-acc-meta">${acc.type === 'Custom' ? (acc.customType || 'Custom') : acc.type}</div>
+      </div>
+      <div class="ob-acc-bal mono">${fmt(acc.balance)}</div>
+      <button class="ob-remove-btn" data-remove-ob="${acc.id}" title="Remove">✕</button>
+    </li>`).join('');
+}
+
+document.getElementById('obType').addEventListener('change', function() {
+  document.getElementById('obCustomTypeRow').style.display = this.value === 'Custom' ? '' : 'none';
+});
+
+document.getElementById('obForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const name       = document.getElementById('obName').value.trim();
+  const type       = document.getElementById('obType').value;
+  const customType = document.getElementById('obCustomType').value.trim();
+  const emoji      = document.getElementById('obEmoji').value.trim() || '🏦';
+  const color      = document.getElementById('obColor').value || SWATCHES[0];
+  const balance    = parseFloat(document.getElementById('obBalance').value) || 0;
+
+  onboardingAccounts.push({ id: uid(), name, type, customType, emoji, color, balance });
+
+  document.getElementById('obName').value = '';
+  document.getElementById('obType').value = 'Checking';
+  document.getElementById('obCustomType').value = '';
+  document.getElementById('obCustomTypeRow').style.display = 'none';
+  document.getElementById('obEmoji').value = '';
+  document.getElementById('obBalance').value = '';
+  const nextColor = SWATCHES[onboardingAccounts.length % SWATCHES.length];
+  document.getElementById('obColor').value = nextColor;
+  buildSwatch('obColorSwatch', 'obColor', nextColor);
+
+  renderObAccList();
+  document.getElementById('obName').focus();
+});
+
+document.getElementById('obAccList').addEventListener('click', e => {
+  const id = e.target.closest('[data-remove-ob]')?.dataset.removeOb;
+  if (!id) return;
+  onboardingAccounts = onboardingAccounts.filter(a => a.id !== id);
+  renderObAccList();
+});
+
+document.getElementById('getStartedBtn').addEventListener('click', () => {
+  if (!onboardingAccounts.length) return;
+  state.accounts    = onboardingAccounts;
+  state.transactions = [];
+  state.goals       = [];
+  saveState();
+  hideOnboarding();
+  renderAll();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  pendingDelete = { kind: '__reset__', id: null };
+  document.getElementById('confirmMsg').textContent =
+    'This will erase all your data and return to the account setup screen. Are you sure?';
+  openModal('confirmModal');
+});
+
+/* =====================
    Accounts
    ===================== */
 function renderAccounts() {
@@ -328,6 +370,11 @@ function confirmDelete(kind, id) {
 document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
   if (!pendingDelete) return;
   const { kind, id } = pendingDelete;
+  if (kind === '__reset__') {
+    localStorage.removeItem('financeApp');
+    location.reload();
+    return;
+  }
   if (kind === 'account') {
     state.transactions = state.transactions.filter(t => t.account !== id && t.toAccount !== id);
     state.accounts = state.accounts.filter(a => a.id !== id);
@@ -731,5 +778,8 @@ function renderAll() {
 /* =====================
    Boot
    ===================== */
-loadState();
-renderAll();
+if (loadState()) {
+  renderAll();
+} else {
+  showOnboarding();
+}
