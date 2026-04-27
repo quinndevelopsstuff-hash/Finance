@@ -113,6 +113,29 @@ document.addEventListener('click', e => {
 });
 
 /* =====================
+   Mobile Drawer
+   ===================== */
+function isMobile() { return window.innerWidth <= 768; }
+
+function openDrawer() {
+  document.getElementById('sidebar').classList.add('drawer-open');
+  document.getElementById('drawerBackdrop').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+
+function closeDrawer() {
+  document.getElementById('sidebar').classList.remove('drawer-open');
+  document.getElementById('drawerBackdrop').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.contains('drawer-open') ? closeDrawer() : openDrawer();
+});
+
+document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+
+/* =====================
    Navigation
    ===================== */
 let currentView = 'dashboard';
@@ -121,6 +144,7 @@ function showView(name) {
   currentView = name;
   document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === `view-${name}`));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === name));
+  if (isMobile()) closeDrawer();
   if (name === 'transactions') renderTransactions();
   if (name === 'goals') renderGoals();
 }
