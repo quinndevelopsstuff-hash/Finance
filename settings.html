@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings — Finance</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Mobile top bar (hidden on desktop via CSS) -->
+  <div class="mobile-topbar" id="mobileTopbar">
+    <div class="mobile-topbar-brand">
+      <span class="app-logo">💰</span>
+      <span class="app-title">Finance</span>
+    </div>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+  </div>
+
+  <!-- Drawer backdrop (mobile only) -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="app-logo">💰</span>
+      <h1 class="app-title">Finance</h1>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">↕️</span> Transactions
+      </a>
+      <a href="index.html" class="nav-item">
+        <span class="nav-icon">🎯</span> Goals
+      </a>
+      <a href="settings.html" class="nav-item active">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
+    </nav>
+
+    <div class="sidebar-accounts">
+      <div class="section-header">
+        <span>Accounts</span>
+      </div>
+      <ul class="account-list" id="accountList"></ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="net-worth-label">Net Worth</div>
+      <div class="net-worth-value mono" id="netWorth">—</div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main">
+    <div class="settings-page">
+
+      <div class="settings-page-header">
+        <a href="index.html" class="back-link">← Back</a>
+        <h2>Settings</h2>
+      </div>
+
+      <!-- ========================
+           Section 1: Customization
+           ======================== -->
+      <section class="settings-section">
+        <div class="settings-section-hd">
+          <h3>🎨 Customization</h3>
+          <p>Personalize the appearance and behavior of your finance tracker.</p>
+        </div>
+        <div class="settings-section-body">
+
+          <div class="settings-row">
+            <div class="settings-row-icon">🌙</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Appearance</div>
+              <div class="settings-row-desc">Toggle between dark and light mode</div>
+            </div>
+            <span class="settings-badge">Coming soon</span>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-icon">💱</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Currency</div>
+              <div class="settings-row-desc">Choose your display currency symbol and format</div>
+            </div>
+            <span class="settings-badge">Coming soon</span>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-icon">🗓️</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Date Format</div>
+              <div class="settings-row-desc">Set how dates are displayed throughout the app</div>
+            </div>
+            <span class="settings-badge">Coming soon</span>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==========================
+           Section 2: Import / Export
+           ========================== -->
+      <section class="settings-section">
+        <div class="settings-section-hd">
+          <h3>📤 Import / Export</h3>
+          <p>Back up your data or bring it in from another source.</p>
+        </div>
+        <div class="settings-section-body">
+
+          <div class="settings-row">
+            <div class="settings-row-icon">⬇️</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Export as JSON</div>
+              <div class="settings-row-desc">Download a full backup of your accounts, transactions, and goals</div>
+            </div>
+            <button class="btn ghost" disabled>Export</button>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-icon">📊</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Export as CSV</div>
+              <div class="settings-row-desc">Download your transactions as a spreadsheet file</div>
+            </div>
+            <button class="btn ghost" disabled>Export</button>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-icon">⬆️</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Import from JSON</div>
+              <div class="settings-row-desc">Restore from a previously exported backup file</div>
+            </div>
+            <button class="btn ghost" disabled>Import</button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================
+           Section 3: Utility
+           ================== -->
+      <section class="settings-section">
+        <div class="settings-section-hd">
+          <h3>🔧 Utility</h3>
+          <p>Maintenance tools for managing your app data.</p>
+        </div>
+        <div class="settings-section-body">
+
+          <div class="settings-row">
+            <div class="settings-row-icon">🧹</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Clear All Transactions</div>
+              <div class="settings-row-desc">Remove every transaction while keeping accounts and goals intact</div>
+            </div>
+            <button class="btn ghost" disabled>Clear</button>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-row-icon">📦</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Archive Old Transactions</div>
+              <div class="settings-row-desc">Hide transactions older than a chosen date to keep your view clean</div>
+            </div>
+            <span class="settings-badge">Coming soon</span>
+          </div>
+
+          <div class="settings-row settings-row-danger">
+            <div class="settings-row-icon">⚠️</div>
+            <div class="settings-row-content">
+              <div class="settings-row-title">Reset App</div>
+              <div class="settings-row-desc">Erase all data and return to the account setup screen</div>
+            </div>
+            <button class="btn danger" disabled>Reset</button>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Toast container (needed if app.js triggers any toasts) -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

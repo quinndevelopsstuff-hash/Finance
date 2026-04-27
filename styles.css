@@ -99,6 +99,7 @@ input::placeholder { color: var(--text-dim); }
   color: var(--text-muted);
   transition: background var(--transition), color var(--transition);
   text-align: left;
+  text-decoration: none;
 }
 .nav-item:hover { background: var(--bg3); color: var(--text); }
 .nav-item.active { background: var(--primary); color: #fff; }
@@ -728,6 +729,108 @@ input::placeholder { color: var(--text-dim); }
   transition: color var(--transition);
 }
 .reset-btn:hover { color: var(--expense); }
+
+/* =====================
+   Settings Page
+   ===================== */
+.settings-page {
+  max-width: 720px;
+}
+
+.settings-page-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.settings-page-header h2 { font-size: 1.5rem; font-weight: 700; }
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  white-space: nowrap;
+}
+.back-link:hover { background: var(--bg3); color: var(--text); border-color: var(--text-dim); }
+
+.settings-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.settings-section-hd {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.settings-section-hd h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.settings-section-hd p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.settings-section-body { padding: 0.375rem 0; }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.875rem 1.5rem;
+  transition: background var(--transition);
+}
+.settings-row + .settings-row { border-top: 1px solid var(--border); }
+.settings-row:hover { background: var(--bg3); }
+
+.settings-row-icon {
+  font-size: 1.25rem;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.settings-row-content { flex: 1; min-width: 0; }
+.settings-row-title {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+.settings-row-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.settings-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 0.2em 0.65em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.settings-row-danger .settings-row-title { color: var(--expense); }
+.settings-row-danger .settings-row-icon { filter: saturate(0.5); }
 
 /* =====================
    Mobile Top Bar — hidden on desktop

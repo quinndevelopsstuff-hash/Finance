@@ -129,11 +129,11 @@ function closeDrawer() {
   document.body.classList.remove('no-scroll');
 }
 
-document.getElementById('hamburgerBtn').addEventListener('click', () => {
+document.getElementById('hamburgerBtn')?.addEventListener('click', () => {
   document.getElementById('sidebar').classList.contains('drawer-open') ? closeDrawer() : openDrawer();
 });
 
-document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+document.getElementById('drawerBackdrop')?.addEventListener('click', closeDrawer);
 
 /* =====================
    Navigation
@@ -149,7 +149,7 @@ function showView(name) {
   if (name === 'goals') renderGoals();
 }
 
-document.querySelectorAll('.nav-item').forEach(btn => {
+document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
   btn.addEventListener('click', () => showView(btn.dataset.view));
 });
 
@@ -222,11 +222,11 @@ function renderObAccList() {
     </li>`).join('');
 }
 
-document.getElementById('obType').addEventListener('change', function() {
+document.getElementById('obType')?.addEventListener('change', function() {
   document.getElementById('obCustomTypeRow').style.display = this.value === 'Custom' ? '' : 'none';
 });
 
-document.getElementById('obForm').addEventListener('submit', e => {
+document.getElementById('obForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const name       = document.getElementById('obName').value.trim();
   const type       = document.getElementById('obType').value;
@@ -251,14 +251,14 @@ document.getElementById('obForm').addEventListener('submit', e => {
   document.getElementById('obName').focus();
 });
 
-document.getElementById('obAccList').addEventListener('click', e => {
+document.getElementById('obAccList')?.addEventListener('click', e => {
   const id = e.target.closest('[data-remove-ob]')?.dataset.removeOb;
   if (!id) return;
   onboardingAccounts = onboardingAccounts.filter(a => a.id !== id);
   renderObAccList();
 });
 
-document.getElementById('getStartedBtn').addEventListener('click', () => {
+document.getElementById('getStartedBtn')?.addEventListener('click', () => {
   if (!onboardingAccounts.length) return;
   state.accounts    = onboardingAccounts;
   state.transactions = [];
@@ -268,7 +268,7 @@ document.getElementById('getStartedBtn').addEventListener('click', () => {
   renderAll();
 });
 
-document.getElementById('resetBtn').addEventListener('click', () => {
+document.getElementById('resetBtn')?.addEventListener('click', () => {
   pendingDelete = { kind: '__reset__', id: null };
   document.getElementById('confirmMsg').textContent =
     'This will erase all your data and return to the account setup screen. Are you sure?';
@@ -308,7 +308,7 @@ function renderAccounts() {
 }
 
 // Open add-account modal
-document.getElementById('addAccountBtn').addEventListener('click', () => {
+document.getElementById('addAccountBtn')?.addEventListener('click', () => {
   document.getElementById('accountModalTitle').textContent = 'New Account';
   document.getElementById('accountId').value = '';
   document.getElementById('accountName').value = '';
@@ -323,12 +323,12 @@ document.getElementById('addAccountBtn').addEventListener('click', () => {
   openModal('accountModal');
 });
 
-document.getElementById('accountType').addEventListener('change', function() {
+document.getElementById('accountType')?.addEventListener('change', function() {
   document.getElementById('customTypeRow').style.display = this.value === 'Custom' ? '' : 'none';
 });
 
 // Edit account
-document.getElementById('accountList').addEventListener('click', e => {
+document.getElementById('accountList')?.addEventListener('click', e => {
   const editId = e.target.closest('[data-edit-acc]')?.dataset.editAcc;
   const delId  = e.target.closest('[data-del-acc]')?.dataset.delAcc;
   if (editId) openEditAccount(editId);
@@ -352,7 +352,7 @@ function openEditAccount(id) {
   openModal('accountModal');
 }
 
-document.getElementById('accountForm').addEventListener('submit', e => {
+document.getElementById('accountForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const id    = document.getElementById('accountId').value;
   const name  = document.getElementById('accountName').value.trim();
@@ -391,7 +391,7 @@ function confirmDelete(kind, id) {
   openModal('confirmModal');
 }
 
-document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+document.getElementById('confirmDeleteBtn')?.addEventListener('click', () => {
   if (!pendingDelete) return;
   const { kind, id } = pendingDelete;
   if (kind === '__reset__') {
@@ -461,11 +461,11 @@ function openAddTxModal() {
   openModal('txModal');
 }
 
-document.getElementById('addTxBtn').addEventListener('click', openAddTxModal);
-document.getElementById('addTxFromDash').addEventListener('click', openAddTxModal);
+document.getElementById('addTxBtn')?.addEventListener('click', openAddTxModal);
+document.getElementById('addTxFromDash')?.addEventListener('click', openAddTxModal);
 
 // Type tab switching
-document.getElementById('txTypeTabs').addEventListener('click', e => {
+document.getElementById('txTypeTabs')?.addEventListener('click', e => {
   const tab = e.target.closest('.type-tab');
   if (!tab) return;
   const type = tab.dataset.type;
@@ -475,7 +475,7 @@ document.getElementById('txTypeTabs').addEventListener('click', e => {
   if (type !== 'transfer') populateTxCategories(type);
 });
 
-document.getElementById('txForm').addEventListener('submit', e => {
+document.getElementById('txForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const type   = document.querySelector('.type-tab.active').dataset.type;
   const desc   = document.getElementById('txDesc').value.trim();
@@ -499,7 +499,7 @@ document.getElementById('txForm').addEventListener('submit', e => {
 });
 
 // Filter tabs
-document.getElementById('txFilterTabs').addEventListener('click', e => {
+document.getElementById('txFilterTabs')?.addEventListener('click', e => {
   const tab = e.target.closest('.filter-tab');
   if (!tab) return;
   txFilter = tab.dataset.filter;
@@ -507,7 +507,7 @@ document.getElementById('txFilterTabs').addEventListener('click', e => {
   renderTransactions();
 });
 
-document.getElementById('txSearch').addEventListener('input', e => {
+document.getElementById('txSearch')?.addEventListener('input', e => {
   txSearch = e.target.value.toLowerCase();
   renderTransactions();
 });
@@ -553,7 +553,7 @@ function renderTransactions() {
   list.innerHTML = txs.map(txItemHTML).join('');
 }
 
-document.getElementById('allTxList').addEventListener('click', e => {
+document.getElementById('allTxList')?.addEventListener('click', e => {
   const id = e.target.closest('[data-del-tx]')?.dataset.delTx;
   if (id) confirmDelete('transaction', id);
 });
@@ -732,14 +732,14 @@ function renderGoals() {
   }).join('');
 }
 
-document.getElementById('goalsGrid').addEventListener('click', e => {
+document.getElementById('goalsGrid')?.addEventListener('click', e => {
   const editId = e.target.closest('[data-edit-goal]')?.dataset.editGoal;
   const delId  = e.target.closest('[data-del-goal]')?.dataset.delGoal;
   if (editId) openEditGoal(editId);
   if (delId)  confirmDelete('goal', delId);
 });
 
-document.getElementById('addGoalBtn').addEventListener('click', () => {
+document.getElementById('addGoalBtn')?.addEventListener('click', () => {
   document.getElementById('goalModalTitle').textContent = 'New Goal';
   document.getElementById('goalId').value = '';
   document.getElementById('goalName').value = '';
@@ -767,7 +767,7 @@ function openEditGoal(id) {
   openModal('goalModal');
 }
 
-document.getElementById('goalForm').addEventListener('submit', e => {
+document.getElementById('goalForm')?.addEventListener('submit', e => {
   e.preventDefault();
   const id      = document.getElementById('goalId').value;
   const name    = document.getElementById('goalName').value.trim();
@@ -802,8 +802,12 @@ function renderAll() {
 /* =====================
    Boot
    ===================== */
-if (loadState()) {
-  renderAll();
+if (document.getElementById('view-dashboard')) {
+  if (loadState()) {
+    renderAll();
+  } else {
+    showOnboarding();
+  }
 } else {
-  showOnboarding();
+  loadState();
 }
