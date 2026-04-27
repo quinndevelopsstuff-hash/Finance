@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span class="app-logo">💰</span>
+      <h1 class="app-title">Finance</h1>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="transactions">
+        <span class="nav-icon">↕️</span> Transactions
+      </button>
+      <button class="nav-item" data-view="goals">
+        <span class="nav-icon">🎯</span> Goals
+      </button>
+    </nav>
+
+    <div class="sidebar-accounts">
+      <div class="section-header">
+        <span>Accounts</span>
+        <button class="icon-btn" id="addAccountBtn" title="Add Account">＋</button>
+      </div>
+      <ul class="account-list" id="accountList"></ul>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="net-worth-label">Net Worth</div>
+      <div class="net-worth-value mono" id="netWorth">$0.00</div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main" id="main">
+
+    <!-- Dashboard View -->
+    <section class="view active" id="view-dashboard">
+      <div class="view-header">
+        <h2>Dashboard</h2>
+        <span class="view-subtitle" id="dashboardMonth"></span>
+      </div>
+
+      <div class="stat-cards" id="statCards">
+        <div class="stat-card">
+          <div class="stat-label">Total Balance</div>
+          <div class="stat-value mono" id="statTotalBalance">$0.00</div>
+        </div>
+        <div class="stat-card income">
+          <div class="stat-label">Monthly Income</div>
+          <div class="stat-value mono" id="statMonthlyIncome">$0.00</div>
+        </div>
+        <div class="stat-card expense">
+          <div class="stat-label">Monthly Expenses</div>
+          <div class="stat-value mono" id="statMonthlyExpenses">$0.00</div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-card">
+          <div class="chart-title">Expenses by Category</div>
+          <div class="donut-wrap">
+            <canvas id="categoryChart"></canvas>
+          </div>
+          <ul class="donut-legend" id="categoryLegend"></ul>
+        </div>
+        <div class="chart-card wide">
+          <div class="chart-title">Income vs Expenses — Last 6 Months</div>
+          <canvas id="barChart"></canvas>
+        </div>
+      </div>
+
+      <div class="recent-section">
+        <div class="section-header">
+          <span>Recent Transactions</span>
+          <button class="text-btn" id="addTxFromDash">+ Add Transaction</button>
+        </div>
+        <ul class="tx-list" id="recentTxList"></ul>
+      </div>
+    </section>
+
+    <!-- Transactions View -->
+    <section class="view" id="view-transactions">
+      <div class="view-header">
+        <h2>Transactions</h2>
+        <button class="btn primary" id="addTxBtn">+ Add Transaction</button>
+      </div>
+
+      <div class="tx-filters">
+        <div class="filter-tabs" id="txFilterTabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="income">Income</button>
+          <button class="filter-tab" data-filter="expense">Expense</button>
+          <button class="filter-tab" data-filter="transfer">Transfer</button>
+        </div>
+        <input class="search-input" id="txSearch" type="text" placeholder="Search transactions…" />
+      </div>
+
+      <ul class="tx-list full" id="allTxList"></ul>
+    </section>
+
+    <!-- Goals View -->
+    <section class="view" id="view-goals">
+      <div class="view-header">
+        <h2>Savings Goals</h2>
+        <button class="btn primary" id="addGoalBtn">+ Add Goal</button>
+      </div>
+      <div class="goals-grid" id="goalsGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== MODALS ===== -->
+
+  <!-- Add / Edit Account Modal -->
+  <div class="modal-overlay" id="accountModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="accountModalTitle">New Account</h3>
+        <button class="close-btn" data-close="accountModal">✕</button>
+      </div>
+      <form id="accountForm" class="modal-form">
+        <input type="hidden" id="accountId" />
+        <div class="form-row">
+          <label>Name</label>
+          <input type="text" id="accountName" required placeholder="e.g. Chase Checking" />
+        </div>
+        <div class="form-row">
+          <label>Type</label>
+          <select id="accountType">
+            <option value="Checking">Checking</option>
+            <option value="Savings">Savings</option>
+            <option value="Cash">Physical Cash</option>
+            <option value="Custom">Custom</option>
+          </select>
+        </div>
+        <div class="form-row" id="customTypeRow" style="display:none">
+          <label>Custom Type</label>
+          <input type="text" id="accountCustomType" placeholder="e.g. Investment" />
+        </div>
+        <div class="form-row">
+          <label>Emoji Icon</label>
+          <input type="text" id="accountEmoji" maxlength="2" placeholder="🏦" />
+        </div>
+        <div class="form-row">
+          <label>Color</label>
+          <div class="color-swatch" id="colorSwatch"></div>
+          <input type="hidden" id="accountColor" value="#6366f1" />
+        </div>
+        <div class="form-row">
+          <label>Starting Balance</label>
+          <input type="number" id="accountBalance" step="0.01" placeholder="0.00" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" data-close="accountModal">Cancel</button>
+          <button type="submit" class="btn primary" id="accountSubmitBtn">Create Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Transaction Modal -->
+  <div class="modal-overlay" id="txModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Transaction</h3>
+        <button class="close-btn" data-close="txModal">✕</button>
+      </div>
+      <form id="txForm" class="modal-form">
+        <div class="form-row">
+          <label>Type</label>
+          <div class="type-tabs" id="txTypeTabs">
+            <button type="button" class="type-tab active" data-type="expense">Expense</button>
+            <button type="button" class="type-tab" data-type="income">Income</button>
+            <button type="button" class="type-tab" data-type="transfer">Transfer</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Description</label>
+          <input type="text" id="txDesc" required placeholder="e.g. Grocery run" />
+        </div>
+        <div class="form-row">
+          <label>Amount</label>
+          <input type="number" id="txAmount" step="0.01" min="0.01" required placeholder="0.00" />
+        </div>
+        <div class="form-row">
+          <label>Date</label>
+          <input type="date" id="txDate" required />
+        </div>
+        <div class="form-row" id="txAccountRow">
+          <label>Account</label>
+          <select id="txAccount"></select>
+        </div>
+        <div class="form-row" id="txToAccountRow" style="display:none">
+          <label>To Account</label>
+          <select id="txToAccount"></select>
+        </div>
+        <div class="form-row" id="txCategoryRow">
+          <label>Category</label>
+          <select id="txCategory"></select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" data-close="txModal">Cancel</button>
+          <button type="submit" class="btn primary">Add Transaction</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add / Edit Goal Modal -->
+  <div class="modal-overlay" id="goalModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="goalModalTitle">New Goal</h3>
+        <button class="close-btn" data-close="goalModal">✕</button>
+      </div>
+      <form id="goalForm" class="modal-form">
+        <input type="hidden" id="goalId" />
+        <div class="form-row">
+          <label>Name</label>
+          <input type="text" id="goalName" required placeholder="e.g. Emergency Fund" />
+        </div>
+        <div class="form-row">
+          <label>Emoji</label>
+          <input type="text" id="goalEmoji" maxlength="2" placeholder="🎯" />
+        </div>
+        <div class="form-row">
+          <label>Target Amount</label>
+          <input type="number" id="goalTarget" step="0.01" min="1" required placeholder="0.00" />
+        </div>
+        <div class="form-row">
+          <label>Current Amount</label>
+          <input type="number" id="goalCurrent" step="0.01" min="0" placeholder="0.00" />
+        </div>
+        <div class="form-row">
+          <label>Color</label>
+          <div class="color-swatch" id="goalColorSwatch"></div>
+          <input type="hidden" id="goalColor" value="#22c55e" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn ghost" data-close="goalModal">Cancel</button>
+          <button type="submit" class="btn primary" id="goalSubmitBtn">Create Goal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal small">
+      <div class="modal-header">
+        <h3>Confirm Delete</h3>
+        <button class="close-btn" data-close="confirmModal">✕</button>
+      </div>
+      <p class="confirm-msg" id="confirmMsg">Are you sure?</p>
+      <div class="form-actions">
+        <button class="btn ghost" data-close="confirmModal">Cancel</button>
+        <button class="btn danger" id="confirmDeleteBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
